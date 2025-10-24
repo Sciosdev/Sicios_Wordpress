@@ -51,6 +51,11 @@ function scios_git_bridge_bootstrap()
         false,
         dirname(plugin_basename(__FILE__)) . '/languages/'
     );
+
+    if (is_admin()) {
+        $admin = new \Scios\GitBridge\Admin\SCIOS_Admin();
+        $admin->register();
+    }
 }
 
 /**
