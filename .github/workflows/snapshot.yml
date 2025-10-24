@@ -87,7 +87,6 @@ jobs:
                           --exclude-glob *.log \
                           --exclude-glob debug.log \
                           --exclude-glob temp-write-test* \
-                           \
                           --exclude-glob plugins/3d-viewer/** \
                           --exclude-glob plugins/all-in-one-seo-pack/** \
                           --exclude-glob plugins/all-in-one-wp-migration/** \
@@ -113,8 +112,7 @@ jobs:
                           --exclude-glob plugins/wp-file-manager/** \
                           --exclude-glob plugins/wp-job-manager/** \
                           --exclude-glob plugins/wp-whatsapp-chat/** \
-                          --exclude-glob plugins/wpseo-woocommerce/** \
-                          \                       
+                          --exclude-glob plugins/wpseo-woocommerce/** \                                                 
                           $FTP_REMOTE_DIR snapshot/wp-content; bye"
 
       - name: Copy into repo layout
