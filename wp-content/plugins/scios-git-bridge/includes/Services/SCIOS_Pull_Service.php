@@ -3,6 +3,9 @@
 namespace Scios\GitBridge\Services;
 
 use RuntimeException;
+use Scios\GitBridge\Infrastructure\SCIOS_Filesystem;
+use Scios\GitBridge\Infrastructure\SCIOS_Logger;
+use Scios\GitBridge\Support\SCIOS_Cache_Purger;
 use WP_Filesystem_Base;
 use ZipArchive;
 
@@ -19,6 +22,22 @@ class SCIOS_Pull_Service
     private const ALLOWED_PATHS   = ['wp-content/'];
     private const LOG_PREFIX_DEPLOY  = 'deploy';
     private const LOG_PREFIX_DRY_RUN = 'dry-run';
+
+    private SCIOS_Filesystem $filesystem_helper;
+
+    private SCIOS_Logger $logger;
+
+    private SCIOS_Cache_Purger $cache_purger;
+
+    public function __construct(
+        ?SCIOS_Filesystem $filesystem_helper = null,
+        ?SCIOS_Logger $logger = null,
+        ?SCIOS_Cache_Purger $cache_purger = null
+    ) {
+        $this->filesystem_helper = $filesystem_helper ?? new SCIOS_Filesystem();
+        $this->logger            = $logger ?? new SCIOS_Logger($this->filesystem_helper);
+        $this->cache_purger      = $cache_purger ?? new SCIOS_Cache_Purger();
+    }
 
     /**
      * Runs a dry run of the deployment process.
@@ -49,17 +68,18 @@ class SCIOS_Pull_Service
      */
     private function execute(bool $simulate): void
     {
-        $log_lines   = [];
-        $status      = 'success';
-        $error       = null;
-        $files       = [];
-        $backups     = [];
-        $backup_dir  = null;
-        $tmp_file    = null;
-        $zip         = null;
-        $filesystem  = null;
-        $settings    = $this->get_settings();
-        $operation   = $simulate ? 'dry-run' : 'deploy';
+        $log_lines    = [];
+        $status       = 'success';
+        $error        = null;
+        $files        = [];
+        $backups      = [];
+        $backup_dir   = null;
+        $cache_purges = [];
+        $tmp_file     = null;
+        $zip          = null;
+        $filesystem   = null;
+        $settings     = $this->get_settings();
+        $operation    = $simulate ? 'dry-run' : 'deploy';
 
         $this->log($log_lines, sprintf('Iniciando %s para la rama %s.', $operation, $settings['deployment_branch']));
 
@@ -78,8 +98,8 @@ class SCIOS_Pull_Service
             $zip = $this->open_zip($tmp_file);
 
             if (!$simulate) {
-                $filesystem = $this->init_filesystem();
-                $backup_dir = $this->prepare_backup_directory($filesystem);
+                $filesystem = $this->filesystem_helper->get_wp_filesystem();
+                $backup_dir = $this->filesystem_helper->prepare_backup_directory();
                 $this->log($log_lines, sprintf('Directorio de backups: %s', $backup_dir));
             }
 
@@ -93,6 +113,10 @@ class SCIOS_Pull_Service
 
             $files   = $simulate ? $process_result['preview'] : $process_result['written'];
             $backups = $process_result['backups'];
+
+            if (!$simulate) {
+                $cache_purges = $this->purge_caches($log_lines);
+            }
 
             $this->log($log_lines, sprintf('%d archivos %s.', count($files), $simulate ? 'analizados' : 'actualizados'));
         } catch (\Throwable $exception) {
@@ -113,10 +137,10 @@ class SCIOS_Pull_Service
 
         try {
             if (!$filesystem instanceof WP_Filesystem_Base) {
-                $filesystem = $this->init_filesystem();
+                $filesystem = $this->filesystem_helper->get_wp_filesystem();
             }
 
-            $log_path = $this->write_log($filesystem, $log_lines, $prefix);
+            $log_path = $this->logger->write($log_lines, $prefix);
 
             $metadata = [
                 'repository'    => $settings['repository_url'],
@@ -129,7 +153,7 @@ class SCIOS_Pull_Service
 
             if ($log_path !== '') {
                 $metadata['log_file'] = basename($log_path);
-                $metadata['log_path'] = $this->relative_path($log_path);
+                $metadata['log_path'] = $this->filesystem_helper->relative_path($log_path);
             }
 
             if ($simulate) {
@@ -139,9 +163,13 @@ class SCIOS_Pull_Service
 
                 $payload = ['last_dry_run' => $metadata];
             } else {
-                $metadata['backup_directory'] = $backup_dir ? $this->relative_path($backup_dir) : null;
+                $metadata['backup_directory'] = $backup_dir ? $this->filesystem_helper->relative_path($backup_dir) : null;
                 if ($error !== null) {
                     $metadata['error'] = $error;
+                }
+
+                if ($cache_purges !== []) {
+                    $metadata['cache_purges'] = $cache_purges;
                 }
 
                 $payload = ['last_deploy' => $metadata];
@@ -151,11 +179,11 @@ class SCIOS_Pull_Service
                 $this->update_metadata($filesystem, $payload);
             } catch (\Throwable $persist_exception) {
                 $this->log($log_lines, 'ERROR al persistir información: ' . $persist_exception->getMessage());
-                $this->write_log($filesystem, $log_lines, $prefix, $log_path);
+                $log_path = $this->logger->write($log_lines, $prefix, $log_path);
             }
         } catch (\Throwable $fs_exception) {
             $this->log($log_lines, 'ERROR al preparar el sistema de archivos: ' . $fs_exception->getMessage());
-            $this->write_log_fallback($log_lines, $prefix);
+            $this->logger->write($log_lines, $prefix);
         }
     }
 
@@ -324,7 +352,7 @@ class SCIOS_Pull_Service
 
             if (substr($relative, -1) === '/') {
                 if ($write && $filesystem instanceof WP_Filesystem_Base) {
-                    $this->ensure_directory($filesystem, trailingslashit(ABSPATH) . $relative);
+                    $this->filesystem_helper->ensure_directory(trailingslashit(ABSPATH) . $relative);
                 }
                 continue;
             }
@@ -339,10 +367,10 @@ class SCIOS_Pull_Service
             }
 
             $destination = trailingslashit(ABSPATH) . $relative;
-            $this->ensure_directory($filesystem, dirname($destination));
+            $this->filesystem_helper->ensure_directory(dirname($destination));
 
             if ($backup_dir && $filesystem->exists($destination) && !$filesystem->is_dir($destination)) {
-                $backup_path = $this->backup_file($filesystem, $destination, $backup_dir);
+                $backup_path = $this->filesystem_helper->backup_file($destination, $backup_dir);
                 if ($backup_path !== null) {
                     $backups[] = $backup_path;
                     $this->log($log, sprintf('Backup creado: %s', $backup_path));
@@ -429,172 +457,50 @@ class SCIOS_Pull_Service
     }
 
     /**
-     * Creates the backup directory base path.
+     * Attempts to purge detected caches and logs their outcomes.
      *
-     * @param WP_Filesystem_Base $filesystem Filesystem instance.
+     * @param array<int, string> $log Log lines buffer.
      *
-     * @return string
+     * @return array<int, array<string, mixed>>
      */
-    private function prepare_backup_directory(WP_Filesystem_Base $filesystem): string
+    private function purge_caches(array &$log): array
     {
-        $uploads = wp_upload_dir();
+        $results = $this->cache_purger->purge();
 
-        $base = '';
-        if (is_array($uploads) && empty($uploads['error']) && !empty($uploads['basedir'])) {
-            $base = trailingslashit($uploads['basedir']);
-        } else {
-            $base = trailingslashit(dirname(__DIR__, 2)) . 'backups/';
+        if ($results === []) {
+            $this->log($log, __('No se detectaron mecanismos de caché para purgar.', 'scios-git-bridge'));
+
+            return [];
         }
 
-        $directory = $base . 'scios/' . gmdate('Ymd-His');
-        $this->ensure_directory($filesystem, $directory);
-
-        return trailingslashit($directory);
-    }
-
-    /**
-     * Creates a backup for a file before overwriting it.
-     *
-     * @param WP_Filesystem_Base $filesystem Filesystem instance.
-     * @param string             $file       Absolute file path.
-     * @param string             $backup_dir Backup base directory.
-     *
-     * @return string|null Relative path of the backup file.
-     */
-    private function backup_file(WP_Filesystem_Base $filesystem, string $file, string $backup_dir): ?string
-    {
-        $contents = $filesystem->get_contents($file);
-        if ($contents === false) {
-            return null;
-        }
-
-        $relative      = ltrim(str_replace(trailingslashit(ABSPATH), '', $file), '/');
-        $destination   = trailingslashit($backup_dir) . $relative;
-        $destination_dir = dirname($destination);
-        $this->ensure_directory($filesystem, $destination_dir);
-
-        if (!$filesystem->put_contents($destination, $contents, FS_CHMOD_FILE)) {
-            return null;
-        }
-
-        return $this->relative_path($destination);
-    }
-
-    /**
-     * Ensures that the directory exists, creating it recursively if necessary.
-     *
-     * @param WP_Filesystem_Base $filesystem Filesystem instance.
-     * @param string             $directory Absolute directory path.
-     *
-     * @return void
-     */
-    private function ensure_directory(WP_Filesystem_Base $filesystem, string $directory): void
-    {
-        $normalized = wp_normalize_path($directory);
-        $normalized = untrailingslashit($normalized);
-
-        if ($normalized === '') {
-            return;
-        }
-
-        if ($filesystem->is_dir($normalized)) {
-            return;
-        }
-
-        $segments = explode('/', $normalized);
-        $current  = '';
-
-        foreach ($segments as $index => $segment) {
-            if ($segment === '') {
-                if ($index === 0) {
-                    $current = '/';
-                }
+        foreach ($results as $result) {
+            if (!is_array($result)) {
                 continue;
             }
 
-            if ($index === 0 && preg_match('/^[A-Za-z]:$/', $segment)) {
-                $current = $segment;
+            $slug    = (string) ($result['slug'] ?? 'desconocido');
+            $success = !empty($result['success']);
+
+            if ($success) {
+                $this->log($log, sprintf(__('Caché purgada: %s', 'scios-git-bridge'), $slug));
                 continue;
             }
 
-            if ($current === '' || $current === '/') {
-                $current .= ($current === '/' ? '' : '') . $segment;
-            } elseif (preg_match('/^[A-Za-z]:$/', $current)) {
-                $current .= '/' . $segment;
+            $message = isset($result['message']) ? (string) $result['message'] : '';
+
+            if ($message !== '') {
+                $this->log(
+                    $log,
+                    sprintf(__('Error al purgar la caché %1$s: %2$s', 'scios-git-bridge'), $slug, $message)
+                );
             } else {
-                $current .= '/' . $segment;
-            }
-
-            if ($filesystem->is_dir($current)) {
-                continue;
-            }
-
-            if (!$filesystem->mkdir($current, FS_CHMOD_DIR)) {
-                throw new RuntimeException(sprintf(__('No se pudo crear el directorio %s.', 'scios-git-bridge'), $current));
+                $this->log($log, sprintf(__('Error al purgar la caché %s.', 'scios-git-bridge'), $slug));
             }
         }
+
+        return $results;
     }
 
-    /**
-     * Writes a log file with the provided lines.
-     *
-     * @param WP_Filesystem_Base $filesystem Filesystem instance.
-     * @param array<int, string> $lines      Log lines.
-     * @param string             $prefix     Log prefix.
-     *
-     * @return string Absolute log file path.
-     */
-    private function write_log(WP_Filesystem_Base $filesystem, array $lines, string $prefix, string $existing_path = ''): string
-    {
-        $log_dir = trailingslashit(dirname(__DIR__, 2)) . 'logs';
-        $this->ensure_directory($filesystem, $log_dir);
-
-        if ($existing_path !== '') {
-            $path = $existing_path;
-        } else {
-            $filename = sprintf('%s-%s.log', $prefix, gmdate('Ymd-His'));
-            $path     = trailingslashit($log_dir) . $filename;
-        }
-
-        $content  = implode("\n", $lines) . "\n";
-
-        if (!$filesystem->put_contents($path, $content, FS_CHMOD_FILE)) {
-            throw new RuntimeException(__('No se pudo escribir el archivo de log.', 'scios-git-bridge'));
-        }
-
-        return $path;
-    }
-
-    /**
-     * Writes the log using direct filesystem access if WP_Filesystem is unavailable.
-     *
-     * @param array<int, string> $lines  Log lines.
-     * @param string             $prefix Log prefix.
-     *
-     * @return void
-     */
-    private function write_log_fallback(array $lines, string $prefix): void
-    {
-        $log_dir = wp_normalize_path(trailingslashit(dirname(__DIR__, 2)) . 'logs');
-
-        if (!is_dir($log_dir)) {
-            wp_mkdir_p($log_dir);
-        }
-
-        $filename = sprintf('%s-%s.log', $prefix, gmdate('Ymd-His'));
-        $path     = trailingslashit($log_dir) . $filename;
-
-        @file_put_contents($path, implode("\n", $lines) . "\n");
-    }
-
-    /**
-     * Updates the deploy metadata file.
-     *
-     * @param WP_Filesystem_Base     $filesystem Filesystem instance.
-     * @param array<string, mixed>   $payload    Data to merge.
-     *
-     * @return void
-     */
     private function update_metadata(WP_Filesystem_Base $filesystem, array $payload): void
     {
         $file = trailingslashit(ABSPATH) . '.scios-deploy.json';
@@ -620,52 +526,6 @@ class SCIOS_Pull_Service
         if (!$filesystem->put_contents($file, $encoded, FS_CHMOD_FILE)) {
             throw new RuntimeException(__('No se pudo escribir el archivo de metadata de despliegue.', 'scios-git-bridge'));
         }
-    }
-
-    /**
-     * Returns the relative path with respect to ABSPATH or plugin base.
-     *
-     * @param string $path Absolute path.
-     *
-     * @return string
-     */
-    private function relative_path(string $path): string
-    {
-        $normalized = str_replace('\\', '/', $path);
-        $root       = str_replace('\\', '/', trailingslashit(ABSPATH));
-
-        if (strpos($normalized, $root) === 0) {
-            return ltrim(substr($normalized, strlen($root)), '/');
-        }
-
-        $plugin_root = str_replace('\\', '/', trailingslashit(dirname(__DIR__, 2)));
-        if (strpos($normalized, $plugin_root) === 0) {
-            return ltrim(substr($normalized, strlen($plugin_root)), '/');
-        }
-
-        return $normalized;
-    }
-
-    /**
-     * Initialises the WordPress filesystem.
-     *
-     * @return WP_Filesystem_Base
-     */
-    private function init_filesystem(): WP_Filesystem_Base
-    {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-
-        if (!WP_Filesystem()) {
-            throw new RuntimeException(__('No se pudo inicializar el sistema de archivos de WordPress.', 'scios-git-bridge'));
-        }
-
-        global $wp_filesystem;
-
-        if (!$wp_filesystem instanceof WP_Filesystem_Base) {
-            throw new RuntimeException(__('El sistema de archivos de WordPress no está disponible.', 'scios-git-bridge'));
-        }
-
-        return $wp_filesystem;
     }
 
     /**
