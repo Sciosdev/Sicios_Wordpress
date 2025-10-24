@@ -48,10 +48,29 @@ function scios_git_bridge_bootstrap()
 
     $pull_service = new \Scios\GitBridge\Services\SCIOS_Pull_Service();
     add_action('scios_git_bridge_refresh_status', [$pull_service, 'dry_run']);
+    add_action('scios_git_bridge_trigger_dry_run', [$pull_service, 'dry_run']);
     add_action('scios_git_bridge_trigger_deploy', [$pull_service, 'deploy']);
 
     $snapshot_service = new \Scios\GitBridge\Services\SCIOS_Snapshot_Service();
     add_action('scios_git_bridge_trigger_snapshot', [$snapshot_service, 'trigger_snapshot'], 10, 1);
+
+    $smoke_test_service = new \Scios\GitBridge\Services\SCIOS_Smoke_Test_Service();
+    add_action('scios_git_bridge_trigger_smoke_test', [$smoke_test_service, 'run'], 10, 1);
+
+    $rollback_service = new \Scios\GitBridge\Services\SCIOS_Rollback_Service();
+    add_action('scios_git_bridge_trigger_rollback', [$rollback_service, 'rollback'], 10, 2);
+
+    $cache_service = new \Scios\GitBridge\Services\SCIOS_Cache_Service();
+    add_action('scios_git_bridge_trigger_cache_purge', [$cache_service, 'purge'], 10, 1);
+
+    add_action(
+        'upgrader_process_complete',
+        static function ($upgrader, $hook_extra) {
+            scios_git_bridge_handle_upgrader_process_complete($hook_extra);
+        },
+        20,
+        2
+    );
 
     load_plugin_textdomain(
         'scios-git-bridge',
@@ -144,4 +163,60 @@ function scios_git_bridge_register_autoloader()
             }
         }
     );
+}
+
+/**
+ * Handles upgrader completion events to trigger automated tasks.
+ *
+ * @param array<string, mixed>|mixed $hook_extra Context provided by the upgrader.
+ *
+ * @return void
+ */
+function scios_git_bridge_handle_upgrader_process_complete($hook_extra)
+{
+    if (!is_array($hook_extra)) {
+        return;
+    }
+
+    $action = isset($hook_extra['action']) ? (string) $hook_extra['action'] : '';
+    $type   = isset($hook_extra['type']) ? (string) $hook_extra['type'] : '';
+
+    if ($action !== 'update' && $action !== 'install') {
+        return;
+    }
+
+    $supported_types = ['plugin', 'theme', 'core'];
+
+    if (!in_array($type, $supported_types, true)) {
+        return;
+    }
+
+    $items = [];
+
+    if ($type === 'plugin' && !empty($hook_extra['plugins'])) {
+        $items = array_map('strval', (array) $hook_extra['plugins']);
+    } elseif ($type === 'theme' && !empty($hook_extra['themes'])) {
+        $items = array_map('strval', (array) $hook_extra['themes']);
+    } elseif ($type === 'core') {
+        $items[] = isset($hook_extra['version']) ? (string) $hook_extra['version'] : get_bloginfo('version');
+    }
+
+    $items = array_filter(array_map('trim', $items));
+
+    $reason = sprintf(
+        /* translators: 1: update type, 2: items list. */
+        __('Actualización detectada (%1$s): %2$s', 'scios-git-bridge'),
+        $type,
+        $items !== [] ? implode(', ', $items) : __('elemento no identificado', 'scios-git-bridge')
+    );
+
+    /**
+     * Fires when a snapshot should be triggered after an upgrader operation.
+     */
+    do_action('scios_git_bridge_trigger_snapshot', $reason);
+
+    /**
+     * Fires when a smoke test should be executed after an upgrader operation.
+     */
+    do_action('scios_git_bridge_trigger_smoke_test', $reason);
 }

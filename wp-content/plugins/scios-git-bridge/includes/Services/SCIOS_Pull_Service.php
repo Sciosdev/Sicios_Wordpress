@@ -74,6 +74,7 @@ class SCIOS_Pull_Service
         $files        = [];
         $backups      = [];
         $backup_dir   = null;
+        $backup_zip   = null;
         $cache_purges = [];
         $tmp_file     = null;
         $zip          = null;
@@ -116,6 +117,9 @@ class SCIOS_Pull_Service
 
             if (!$simulate) {
                 $cache_purges = $this->purge_caches($log_lines);
+                if ($backup_dir !== null) {
+                    $backup_zip = $this->create_backup_zip($backup_dir, $log_lines);
+                }
             }
 
             $this->log($log_lines, sprintf('%d archivos %s.', count($files), $simulate ? 'analizados' : 'actualizados'));
@@ -164,6 +168,9 @@ class SCIOS_Pull_Service
                 $payload = ['last_dry_run' => $metadata];
             } else {
                 $metadata['backup_directory'] = $backup_dir ? $this->filesystem_helper->relative_path($backup_dir) : null;
+                if ($backup_zip !== null) {
+                    $metadata['backup_zip'] = $backup_zip;
+                }
                 if ($error !== null) {
                     $metadata['error'] = $error;
                 }
@@ -499,6 +506,37 @@ class SCIOS_Pull_Service
         }
 
         return $results;
+    }
+
+    /**
+     * Creates a zip archive with the backup contents to ease future rollbacks.
+     *
+     * @param string               $backup_dir Backup directory path.
+     * @param array<int, string>   $log        Log buffer.
+     *
+     * @return string|null Relative path of the generated zip when successful.
+     */
+    private function create_backup_zip(string $backup_dir, array &$log): ?string
+    {
+        $normalized_dir = untrailingslashit(wp_normalize_path($backup_dir));
+
+        if ($normalized_dir === '') {
+            return null;
+        }
+
+        $destination = $normalized_dir . '.zip';
+
+        try {
+            $absolute = $this->filesystem_helper->create_zip([$normalized_dir], $destination);
+            $relative = $this->filesystem_helper->relative_path($absolute);
+            $this->log($log, sprintf('ZIP de respaldo generado: %s', $relative));
+
+            return $relative;
+        } catch (\Throwable $exception) {
+            $this->log($log, 'ERROR al generar ZIP de respaldo: ' . $exception->getMessage());
+
+            return null;
+        }
     }
 
     private function update_metadata(WP_Filesystem_Base $filesystem, array $payload): void

@@ -171,10 +171,17 @@ class SCIOS_Admin
         switch ($requested_action) {
             case 'refresh-status':
                 /**
-                 * Fires when the user triggers the refresh status action.
+                 * Fires when the user triggers the legacy refresh status action.
                  */
                 do_action('scios_git_bridge_refresh_status');
                 $this->add_notice('updated', esc_html__('Estado actualizado correctamente.', 'scios-git-bridge'));
+                break;
+            case 'trigger-dry-run':
+                /**
+                 * Fires when the user triggers the dry-run action.
+                 */
+                do_action('scios_git_bridge_trigger_dry_run');
+                $this->add_notice('updated', esc_html__('Análisis de dry-run en curso. Revisa los registros para más detalles.', 'scios-git-bridge'));
                 break;
             case 'trigger-deploy':
                 /**
@@ -192,6 +199,41 @@ class SCIOS_Admin
                     esc_html__('Acción manual desde el panel de administración', 'scios-git-bridge')
                 );
                 $this->add_notice('updated', esc_html__('Solicitud de snapshot enviada.', 'scios-git-bridge'));
+                break;
+            case 'trigger-smoke-test':
+                /**
+                 * Fires when the user triggers the smoke-test action.
+                 */
+                do_action(
+                    'scios_git_bridge_trigger_smoke_test',
+                    esc_html__('Acción manual desde el panel de administración', 'scios-git-bridge')
+                );
+                $this->add_notice('updated', esc_html__('Smoke-test iniciado.', 'scios-git-bridge'));
+                break;
+            case 'trigger-rollback':
+                $rollback_zip = isset($_POST['scios_git_bridge_rollback_zip'])
+                    ? sanitize_text_field(wp_unslash($_POST['scios_git_bridge_rollback_zip']))
+                    : '';
+
+                /**
+                 * Fires when the user triggers the rollback action.
+                 */
+                do_action(
+                    'scios_git_bridge_trigger_rollback',
+                    $rollback_zip,
+                    esc_html__('Acción manual desde el panel de administración', 'scios-git-bridge')
+                );
+                $this->add_notice('updated', esc_html__('Proceso de rollback iniciado.', 'scios-git-bridge'));
+                break;
+            case 'trigger-cache-purge':
+                /**
+                 * Fires when the user triggers the cache purge action.
+                 */
+                do_action(
+                    'scios_git_bridge_trigger_cache_purge',
+                    esc_html__('Acción manual desde el panel de administración', 'scios-git-bridge')
+                );
+                $this->add_notice('updated', esc_html__('Purga de cachés iniciada.', 'scios-git-bridge'));
                 break;
             default:
                 $this->add_notice('error', esc_html__('Acción no reconocida.', 'scios-git-bridge'));
@@ -381,14 +423,30 @@ class SCIOS_Admin
      */
     private function render_action_buttons(): void
     {
+        $rollback_zip        = $this->get_latest_backup_zip();
+        $rollback_fields     = [];
+        $rollback_attributes = [];
+
+        if ($rollback_zip !== '') {
+            $rollback_fields['scios_git_bridge_rollback_zip'] = $rollback_zip;
+        } else {
+            $rollback_attributes['disabled'] = 'disabled';
+        }
+
         ?>
         <hr />
         <h2><?php esc_html_e('Acciones', 'scios-git-bridge'); ?></h2>
         <div class="scios-git-bridge-actions">
-            <?php $this->render_action_form('refresh-status', esc_html__('Actualizar estado', 'scios-git-bridge'), 'secondary'); ?>
+            <?php $this->render_action_form('trigger-dry-run', esc_html__('Analizar cambios (dry-run)', 'scios-git-bridge'), 'secondary'); ?>
             <?php $this->render_action_form('trigger-deploy', esc_html__('Iniciar despliegue', 'scios-git-bridge'), 'primary'); ?>
             <?php $this->render_action_form('trigger-snapshot', esc_html__('Solicitar snapshot', 'scios-git-bridge'), 'secondary'); ?>
+            <?php $this->render_action_form('trigger-smoke-test', esc_html__('Ejecutar smoke-test', 'scios-git-bridge'), 'secondary'); ?>
+            <?php $this->render_action_form('trigger-rollback', esc_html__('Ejecutar rollback', 'scios-git-bridge'), 'secondary', $rollback_fields, $rollback_attributes); ?>
+            <?php $this->render_action_form('trigger-cache-purge', esc_html__('Purgar cachés detectadas', 'scios-git-bridge'), 'secondary'); ?>
         </div>
+        <?php if ($rollback_zip === '') : ?>
+            <p class="description"><?php esc_html_e('No se encontró un ZIP de respaldo para ejecutar el rollback.', 'scios-git-bridge'); ?></p>
+        <?php endif; ?>
         <?php
     }
 
@@ -398,17 +456,29 @@ class SCIOS_Admin
      * @param string $action Action identifier.
      * @param string $label  Button label.
      * @param string $class  Button class.
+     * @param array<string, string> $fields Additional hidden fields.
+     * @param array<string, string> $button_attributes Extra attributes for the submit button.
      *
      * @return void
      */
-    private function render_action_form(string $action, string $label, string $class = 'secondary'): void
+    private function render_action_form(string $action, string $label, string $class = 'secondary', array $fields = [], array $button_attributes = []): void
     {
         ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" style="display:inline-block;margin-right:1rem;">
             <?php wp_nonce_field('scios_git_bridge_action'); ?>
             <input type="hidden" name="action" value="scios_git_bridge_action" />
             <input type="hidden" name="scios_git_bridge_action" value="<?php echo esc_attr($action); ?>" />
-            <?php submit_button($label, $class, '', false); ?>
+            <?php
+            foreach ($fields as $name => $value) {
+                printf(
+                    '<input type="hidden" name="%1$s" value="%2$s" />',
+                    esc_attr($name),
+                    esc_attr($value)
+                );
+            }
+
+            submit_button($label, $class, '', false, $button_attributes);
+            ?>
         </form>
         <?php
     }
@@ -435,6 +505,34 @@ class SCIOS_Admin
         $data = json_decode($contents, true);
 
         return is_array($data) ? $data : [];
+    }
+
+    /**
+     * Retrieves the latest backup zip path from stored metadata when available.
+     */
+    private function get_latest_backup_zip(): string
+    {
+        $metadata = $this->load_deploy_metadata();
+
+        if (!isset($metadata['last_deploy']) || !is_array($metadata['last_deploy'])) {
+            return '';
+        }
+
+        $last_deploy = $metadata['last_deploy'];
+
+        if (!empty($last_deploy['backup_zip'])) {
+            return (string) $last_deploy['backup_zip'];
+        }
+
+        if (!empty($last_deploy['backup_directory'])) {
+            $directory = rtrim((string) $last_deploy['backup_directory'], '/\\');
+
+            if ($directory !== '') {
+                return $directory . '.zip';
+            }
+        }
+
+        return '';
     }
 
     /**
