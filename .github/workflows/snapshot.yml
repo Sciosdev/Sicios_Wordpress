@@ -7,6 +7,14 @@ on:
         description: "Por qué se lanzó el snapshot"
         required: false
         default: "manual"
+      initiator:
+        description: "Quién inició la solicitud"
+        required: false
+        default: ""
+      environment:
+        description: "Entorno o dominio origen"
+        required: false
+        default: ""
 
 # Necesita permiso para commitear a la rama server-snapshot
 permissions:
