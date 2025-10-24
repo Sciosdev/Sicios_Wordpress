@@ -1,0 +1,381 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Scios Git Bridge 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-05-18 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: custom-script\n"
+"X-Domain: scios-git-bridge\n"
+
+#: includes/Admin/SCIOS_Admin.php:38 includes/Admin/SCIOS_Admin.php:39
+msgid "Scios Git Bridge"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:72
+msgid "Repositorio remoto"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:74
+msgid "Configura los detalles de conexión con tu repositorio."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:81
+msgid "URL del repositorio"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:82
+msgid "Ejemplo: https://github.com/empresa/proyecto.git"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:87
+msgid "Rama de despliegue"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:88
+msgid "Nombre de la rama que se usará para desplegar cambios."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:93
+msgid "Clave de despliegue"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:94
+msgid "Clave o token que utilizará el puente para autenticarse."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:99
+msgid "Snapshots remotos"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:101
+msgid "Configura los datos necesarios para solicitar snapshots vía GitHub Actions."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:108
+msgid "Repositorio (owner/repo)"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:109
+msgid "Formato esperado: empresa/proyecto. Si se deja vacío se intentará inferir desde la URL del repositorio."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:114
+msgid "Workflow de snapshot"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:115
+msgid "Nombre del archivo YAML o ID del workflow que debe ejecutarse."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:120
+msgid "Token de snapshot"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:121
+msgid "Token personal con permisos para ejecutar el workflow."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:133
+msgid "No tienes permisos suficientes para acceder a esta página."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:162
+msgid "Acción no autorizada."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:177
+msgid "Estado actualizado correctamente."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:184
+msgid "Análisis de dry-run en curso. Revisa los registros para más detalles."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:191
+msgid "Proceso de despliegue iniciado."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:199 includes/Admin/SCIOS_Admin.php:209 includes/Admin/SCIOS_Admin.php:224 includes/Admin/SCIOS_Admin.php:234
+msgid "Acción manual desde el panel de administración"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:201
+msgid "Solicitud de snapshot enviada."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:211
+msgid "Smoke-test iniciado."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:226
+msgid "Proceso de rollback iniciado."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:236
+msgid "Purga de cachés iniciada."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:239
+msgid "Acción no reconocida."
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:440
+msgid "Analizar cambios (dry-run)"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:441
+msgid "Iniciar despliegue"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:442
+msgid "Solicitar snapshot"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:443
+msgid "Ejecutar smoke-test"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:444
+msgid "Ejecutar rollback"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:445
+msgid "Purgar cachés detectadas"
+msgstr ""
+
+#: includes/Admin/SCIOS_Admin.php:618
+msgid "líneas omitidas"
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Filesystem.php:39
+msgid "No se pudo inicializar el sistema de archivos de WordPress."
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Filesystem.php:45
+msgid "No se obtuvo una instancia válida de WP_Filesystem."
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Filesystem.php:100
+msgid "No se pudo crear el directorio %s."
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Filesystem.php:124
+msgid "No se pudo copiar el archivo hacia %s."
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Filesystem.php:150
+msgid "No se pudo crear el archivo ZIP solicitado."
+msgstr ""
+
+#: includes/Infrastructure/SCIOS_Logger.php:73
+msgid "No se pudo escribir el archivo de log."
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:56 includes/Services/SCIOS_Pull_Service.php:478
+msgid "No se detectaron mecanismos de caché para purgar."
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:68
+msgid "Caché purgada correctamente: %s"
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:76
+msgid "Fallo al purgar %1$s: %2$s"
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:78
+msgid "Fallo al purgar la caché %s."
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:144
+msgid "No se pudo serializar la metadata de la purga de caché."
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:148
+msgid "No se pudo escribir la metadata de la purga de caché."
+msgstr ""
+
+#: includes/Services/SCIOS_Cache_Service.php:157 includes/Services/SCIOS_Rollback_Service.php:349 includes/Services/SCIOS_Smoke_Test_Service.php:286 includes/Services/SCIOS_Snapshot_Service.php:167
+msgid "Motivo no especificado"
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:89
+msgid "La URL del repositorio no está configurada."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:93
+msgid "La rama de despliegue no está configurada."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:243
+msgid "No se pudo determinar el repositorio de GitHub."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:267
+msgid "No se pudo crear el archivo temporal para la descarga."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:295
+msgid "La descarga del ZIP falló con código %d."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:299
+msgid "El archivo ZIP descargado está vacío."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:318
+msgid "No se pudo abrir el archivo ZIP descargado."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:373 includes/Services/SCIOS_Rollback_Service.php:104
+msgid "El sistema de archivos de WordPress no está disponible."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:389
+msgid "No se pudo leer el archivo %s del ZIP."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:393
+msgid "No se pudo escribir el archivo %s."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:492
+msgid "Caché purgada: %s"
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:501
+msgid "Error al purgar la caché %1$s: %2$s"
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:504
+msgid "Error al purgar la caché %s."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:561
+msgid "No se pudo serializar la metadata del despliegue."
+msgstr ""
+
+#: includes/Services/SCIOS_Pull_Service.php:565
+msgid "No se pudo escribir el archivo de metadata de despliegue."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:86
+msgid "Se detectó un archivo con rutas no válidas: %s"
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:93
+msgid "Intento de escritura fuera del directorio permitido: %s"
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:98
+msgid "No se pudo leer el archivo %s del ZIP de rollback."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:108
+msgid "No se pudo restaurar el archivo %s."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:171
+msgid "No se pudo determinar el ZIP de respaldo para el rollback."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:177
+msgid "No se encontró el archivo ZIP de respaldo: %s"
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:231
+msgid "No se pudo abrir el ZIP de respaldo para el rollback."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:336
+msgid "No se pudo serializar la metadata del rollback."
+msgstr ""
+
+#: includes/Services/SCIOS_Rollback_Service.php:340
+msgid "No se pudo escribir el archivo de metadata tras el rollback."
+msgstr ""
+
+#: includes/Services/SCIOS_Smoke_Test_Service.php:48
+msgid "No se configuraron endpoints para el smoke-test."
+msgstr ""
+
+#: includes/Services/SCIOS_Smoke_Test_Service.php:179
+msgid "Se recibió un endpoint sin URL para el smoke-test."
+msgstr ""
+
+#: includes/Services/SCIOS_Smoke_Test_Service.php:273
+msgid "No se pudo serializar la metadata del smoke-test."
+msgstr ""
+
+#: includes/Services/SCIOS_Smoke_Test_Service.php:277
+msgid "No se pudo escribir el archivo de metadata del smoke-test."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:60
+msgid "Ya existe un snapshot en curso. Operación bloqueada mediante transient."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:97
+msgid "No fue posible serializar la petición hacia GitHub."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:131
+msgid "La API devolvió un estado no esperado: %d."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:213
+msgid "No se ha configurado el repositorio para snapshots."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:218
+msgid "La URL del repositorio no es válida para determinar owner/repo."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:223
+msgid "No se pudo inferir el repositorio desde la URL configurada."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:245
+msgid "El repositorio debe tener formato owner/repo."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:262
+msgid "No se ha configurado el workflow de snapshot."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:279
+msgid "No se ha configurado el token para snapshots."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:440
+msgid "No se pudo serializar la metadata del snapshot."
+msgstr ""
+
+#: includes/Services/SCIOS_Snapshot_Service.php:444
+msgid "No se pudo escribir el archivo de metadata del snapshot."
+msgstr ""
+
+#: scios-git-bridge.php:97
+#. translators: 1: plugin name, 2: PHP version number
+msgid "%1$s requires PHP version %2$s or higher. Please update PHP to continue using the plugin."
+msgstr ""
+
+#: scios-git-bridge.php:111
+#. translators: 1: plugin name, 2: WordPress version number
+msgid "%1$s requires WordPress version %2$s or higher. Please update WordPress to continue using the plugin."
+msgstr ""
+
+#: scios-git-bridge.php:208
+#. translators: 1: update type, 2: items list.
+msgid "Actualización detectada (%1$s): %2$s"
+msgstr ""
+
+#: scios-git-bridge.php:210
+#. translators: 1: update type, 2: items list.
+msgid "elemento no identificado"
+msgstr ""
