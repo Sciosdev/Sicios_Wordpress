@@ -81,14 +81,18 @@ jobs:
           set net:persist-retries 1
           set cmd:fail-exit yes
 
-          # Entra primero al directorio remoto correcto
-          cd $FTP_REMOTE_DIR    # si NO entra directo a wp-content, usa: public_html/wp-content
-
           mirror --verbose --only-newer --parallel=4 \
-            --exclude-glob ai1wm-backups/** --exclude-glob cache/** --exclude-glob upgrade/** \
-            --exclude-glob upgrade-temp-backup/** --exclude-glob uploads/** \
-            --exclude-glob jetpack-waf/** --exclude-glob webp-express/** --exclude-glob wp-rocket-config/** \
-            --exclude-glob *.log --exclude-glob debug.log --exclude-glob temp-write-test* \
+            --exclude-glob ai1wm-backups/** \
+            --exclude-glob cache/** \
+            --exclude-glob upgrade/** \
+            --exclude-glob upgrade-temp-backup/** \
+            --exclude-glob uploads/** \
+            --exclude-glob jetpack-waf/** \
+            --exclude-glob webp-express/** \
+            --exclude-glob wp-rocket-config/** \
+            --exclude-glob *.log \
+            --exclude-glob debug.log \
+            --exclude-glob temp-write-test* \
             --exclude-glob plugins/3d-viewer/** \
             --exclude-glob plugins/all-in-one-seo-pack/** \
             --exclude-glob plugins/all-in-one-wp-migration/** \
@@ -115,9 +119,10 @@ jobs:
             --exclude-glob plugins/wp-job-manager/** \
             --exclude-glob plugins/wp-whatsapp-chat/** \
             --exclude-glob plugins/wpseo-woocommerce/** \
-            . snapshot/wp-content
+            "$FTP_REMOTE_DIR" snapshot/wp-content
           bye
           LFTP
+
 
       - name: Copy into repo layout
         run: |
