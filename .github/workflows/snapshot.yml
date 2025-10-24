@@ -8,11 +8,11 @@ on:
         required: false
         default: "manual"
       initiator:
-        description: "Quién inició la solicitud"
+        description: "Quién inició la solicitud (se completa automáticamente desde WordPress)"
         required: false
         default: ""
       environment:
-        description: "Entorno o dominio origen"
+        description: "Entorno o dominio origen (se completa automáticamente desde WordPress)"
         required: false
         default: ""
 
