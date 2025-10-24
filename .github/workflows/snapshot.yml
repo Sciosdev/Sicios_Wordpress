@@ -67,27 +67,29 @@ jobs:
           rm -rf snapshot
           mkdir -p snapshot/wp-content
 
-      - name: Mirror wp-content via FTPS (explicit TLS)
+      - name: Mirror wp-content via FTPS (explicit TLS) EXCLUDING selected plugins
         env:
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}   # <-- crea este secret en el repo
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
         run: |
           : "${FTP_PORT:=21}"
-          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
-                   set net:timeout 30; set net:max-retries 2; set net:persist-retries 1; \
-                   open -u $FTP_USERNAME,$FTP_PASSWORD -p $FTP_PORT ftp://$FTP_SERVER; \
-                   mirror --verbose --only-newer --parallel=4 \
-                          --exclude-glob ai1wm-backups/** \
-                          --exclude-glob cache/** \
-                          --exclude-glob upgrade/** \
-                          --exclude-glob upgrade-temp-backup/** \
-                          --exclude-glob uploads/** \
-                          --exclude-glob jetpack-waf/** \
-                          --exclude-glob webp-express/** \
-                          --exclude-glob wp-rocket-config/** \
-                          --exclude-glob *.log \
-                          --exclude-glob debug.log \
-                          --exclude-glob temp-write-test* \
-                          --exclude-glob plugins/3d-viewer/** \
+          lftp -u "$FTP_USERNAME","$FTP_PASSWORD" -p "$FTP_PORT" "ftp://$FTP_SERVER" <<LFTP
+          set ssl:verify-certificate no
+          set ftp:ssl-force true
+          set ftp:ssl-protect-data true
+          set net:timeout 30
+          set net:max-retries 2
+          set net:persist-retries 1
+          set cmd:fail-exit yes
+
+          # Entra primero al directorio remoto correcto
+          cd $FTP_REMOTE_DIR    # si NO entra directo a wp-content, usa: public_html/wp-content
+
+          mirror --verbose --only-newer --parallel=4 \
+            --exclude-glob ai1wm-backups/** --exclude-glob cache/** --exclude-glob upgrade/** \
+            --exclude-glob upgrade-temp-backup/** --exclude-glob uploads/** \
+            --exclude-glob jetpack-waf/** --exclude-glob webp-express/** --exclude-glob wp-rocket-config/** \
+            --exclude-glob *.log --exclude-glob debug.log --exclude-glob temp-write-test* \
+            --exclude-glob plugins/3d-viewer/** \
             --exclude-glob plugins/all-in-one-seo-pack/** \
             --exclude-glob plugins/all-in-one-wp-migration/** \
             --exclude-glob plugins/all-in-one-wp-migration-unlimited-extension/** \
@@ -112,8 +114,10 @@ jobs:
             --exclude-glob plugins/wp-file-manager/** \
             --exclude-glob plugins/wp-job-manager/** \
             --exclude-glob plugins/wp-whatsapp-chat/** \
-            --exclude-glob plugins/wpseo-woocommerce/** \                                                                         
-                          $FTP_REMOTE_DIR snapshot/wp-content; bye"
+            --exclude-glob plugins/wpseo-woocommerce/** \
+            . snapshot/wp-content
+          bye
+          LFTP
 
       - name: Copy into repo layout
         run: |
