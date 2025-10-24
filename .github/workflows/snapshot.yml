@@ -1,0 +1,99 @@
+name: Server snapshot → server-snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Por qué se lanzó el snapshot"
+        required: false
+        default: "manual"
+
+# Necesita permiso para commitear a la rama server-snapshot
+permissions:
+  contents: write
+
+# Evita ejecutar dos snapshots a la vez
+concurrency:
+  group: snapshot
+  cancel-in-progress: false
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+
+    # TUS DATOS (no sensibles) → ajusta aquí si lo necesitas
+    env:
+      FTP_SERVER: ftp.scios.club
+      FTP_USERNAME: gith@scios.club
+      FTP_PORT: 21
+      # Si el home del usuario FTP es /public_html/wp-content, deja '.'
+      # Si el home es la raíz del hosting, cambia a: public_html/wp-content
+      FTP_REMOTE_DIR: .
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lftp
+
+      - name: Prepare server-snapshot branch
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads origin server-snapshot >/dev/null 2>&1; then
+            git fetch origin server-snapshot
+            git checkout server-snapshot
+          else
+            git checkout --orphan server-snapshot
+            rm -rf *
+            git commit --allow-empty -m "Initialize server-snapshot"
+            git push origin server-snapshot
+          fi
+
+          rm -rf snapshot
+          mkdir -p snapshot/wp-content
+
+      - name: Mirror wp-content via FTPS (explicit TLS)
+        env:
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}   # <-- crea este secret en el repo
+        run: |
+          : "${FTP_PORT:=21}"
+          lftp -e "set ssl:verify-certificate no; set ftp:ssl-force true; set ftp:ssl-protect-data true; \
+                   set net:timeout 30; set net:max-retries 2; set net:persist-retries 1; \
+                   open -u $FTP_USERNAME,$FTP_PASSWORD -p $FTP_PORT ftp://$FTP_SERVER; \
+                   mirror --verbose --only-newer --parallel=4 \
+                          --exclude-glob ai1wm-backups/** \
+                          --exclude-glob cache/** \
+                          --exclude-glob upgrade/** \
+                          --exclude-glob upgrade-temp-backup/** \
+                          --exclude-glob uploads/** \
+                          --exclude-glob jetpack-waf/** \
+                          --exclude-glob webp-express/** \
+                          --exclude-glob wp-rocket-config/** \
+                          --exclude-glob *.log \
+                          --exclude-glob debug.log \
+                          --exclude-glob temp-write-test* \
+                          $FTP_REMOTE_DIR snapshot/wp-content; bye"
+
+      - name: Copy into repo layout
+        run: |
+          mkdir -p wp-content
+          rsync -a --delete snapshot/wp-content/ wp-content/
+
+      - name: Commit & push if changes
+        run: |
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            TS="$(date -u +'%Y-%m-%d %H:%M:%S') UTC"
+            REASON="${{ github.event.inputs.reason }}"
+            git commit -m "Server snapshot: ${REASON:-manual} (${TS})"
+            git push origin server-snapshot
+          fi
