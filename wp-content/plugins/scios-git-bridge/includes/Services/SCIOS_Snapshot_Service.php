@@ -3,6 +3,9 @@
 namespace Scios\GitBridge\Services;
 
 use RuntimeException;
+use Scios\GitBridge\Infrastructure\SCIOS_Filesystem;
+use Scios\GitBridge\Infrastructure\SCIOS_Logger;
+use Scios\GitBridge\Support\SCIOS_Lock;
 use WP_Filesystem_Base;
 
 if (!defined('ABSPATH')) {
@@ -20,6 +23,22 @@ class SCIOS_Snapshot_Service
     private const TRANSIENT_TTL    = 300; // 5 minutes.
     private const USER_AGENT       = 'Scios-Git-Bridge Snapshot Service';
 
+    private SCIOS_Filesystem $filesystem_helper;
+
+    private SCIOS_Logger $logger;
+
+    private SCIOS_Lock $lock;
+
+    public function __construct(
+        ?SCIOS_Filesystem $filesystem_helper = null,
+        ?SCIOS_Logger $logger = null,
+        ?SCIOS_Lock $lock = null
+    ) {
+        $this->filesystem_helper = $filesystem_helper ?? new SCIOS_Filesystem();
+        $this->logger            = $logger ?? new SCIOS_Logger($this->filesystem_helper);
+        $this->lock              = $lock ?? new SCIOS_Lock(self::TRANSIENT_LOCK, self::TRANSIENT_TTL);
+    }
+
     /**
      * Triggers the configured GitHub snapshot workflow.
      *
@@ -36,7 +55,7 @@ class SCIOS_Snapshot_Service
 
         $this->log($log_lines, sprintf('Iniciando solicitud de snapshot. Motivo: %s', $reason));
 
-        if ($this->is_locked()) {
+        if ($this->lock->is_locked()) {
             $status = 'locked';
             $error  = __('Ya existe un snapshot en curso. Operación bloqueada mediante transient.', 'scios-git-bridge');
             $this->log($log_lines, 'ERROR: ' . $error);
@@ -45,7 +64,7 @@ class SCIOS_Snapshot_Service
             return;
         }
 
-        $lock_acquired = $this->acquire_lock();
+        $lock_acquired = $this->lock->acquire();
         if (!$lock_acquired) {
             $this->log($log_lines, 'ADVERTENCIA: no se pudo establecer el transient de bloqueo. Se continuará con la ejecución.');
         }
@@ -117,7 +136,7 @@ class SCIOS_Snapshot_Service
             $this->log($log_lines, 'ERROR: ' . $error);
         } finally {
             if ($lock_acquired) {
-                $this->release_lock();
+                $this->lock->release();
             }
         }
 
@@ -149,36 +168,6 @@ class SCIOS_Snapshot_Service
         }
 
         return $reason;
-    }
-
-    /**
-     * Determines whether a snapshot run is currently locked.
-     *
-     * @return bool
-     */
-    private function is_locked(): bool
-    {
-        return (bool) get_transient(self::TRANSIENT_LOCK);
-    }
-
-    /**
-     * Attempts to acquire the transient lock.
-     *
-     * @return bool True if the lock was stored successfully.
-     */
-    private function acquire_lock(): bool
-    {
-        return set_transient(self::TRANSIENT_LOCK, 1, self::TRANSIENT_TTL);
-    }
-
-    /**
-     * Removes the transient lock.
-     *
-     * @return void
-     */
-    private function release_lock(): void
-    {
-        delete_transient(self::TRANSIENT_LOCK);
     }
 
     /**
@@ -406,125 +395,29 @@ class SCIOS_Snapshot_Service
      */
     private function persist_results(array $log_lines, array $metadata): void
     {
-        $filesystem = null;
-        $log_path   = '';
+        $log_path = '';
 
         try {
-            $filesystem = $this->init_filesystem();
-            $log_path   = $this->write_log($filesystem, $log_lines, self::LOG_PREFIX);
+            $filesystem = $this->filesystem_helper->get_wp_filesystem();
+            $log_path   = $this->logger->write($log_lines, self::LOG_PREFIX);
 
             if ($log_path !== '') {
                 $metadata['log_file'] = basename($log_path);
-                $metadata['log_path'] = $this->relative_path($log_path);
+                $metadata['log_path'] = $this->filesystem_helper->relative_path($log_path);
             }
 
             $this->update_metadata($filesystem, ['last_snapshot' => $metadata]);
         } catch (\Throwable $exception) {
             $log_lines[] = sprintf('[%s] ERROR al persistir la información: %s', gmdate('c'), $exception->getMessage());
-            $this->write_log_fallback($log_lines, self::LOG_PREFIX);
+            $this->logger->write($log_lines, self::LOG_PREFIX, $log_path);
         }
     }
 
-    /**
-     * Appends a log message to the buffer.
-     *
-     * @param array<int, string> $lines   Log buffer.
-     * @param string             $message Message to append.
-     *
-     * @return void
-     */
     private function log(array &$lines, string $message): void
     {
         $lines[] = sprintf('[%s] %s', gmdate('c'), $message);
     }
 
-    /**
-     * Initialises the WordPress filesystem.
-     *
-     * @return WP_Filesystem_Base
-     */
-    private function init_filesystem(): WP_Filesystem_Base
-    {
-        require_once ABSPATH . 'wp-admin/includes/file.php';
-
-        if (!WP_Filesystem()) {
-            throw new RuntimeException(__('No se pudo inicializar el sistema de archivos de WordPress.', 'scios-git-bridge'));
-        }
-
-        global $wp_filesystem;
-
-        if (!$wp_filesystem instanceof WP_Filesystem_Base) {
-            throw new RuntimeException(__('No se obtuvo una instancia válida de WP_Filesystem.', 'scios-git-bridge'));
-        }
-
-        return $wp_filesystem;
-    }
-
-    /**
-     * Writes log lines to the uploads directory.
-     *
-     * @param WP_Filesystem_Base $filesystem Filesystem instance.
-     * @param array<int, string> $lines      Log lines.
-     * @param string             $prefix     Filename prefix.
-     *
-     * @return string Log file path.
-     */
-    private function write_log(WP_Filesystem_Base $filesystem, array $lines, string $prefix): string
-    {
-        $upload_dir = wp_upload_dir();
-        $base_dir   = isset($upload_dir['basedir']) ? (string) $upload_dir['basedir'] : '';
-
-        if ($base_dir !== '') {
-            $target_dir = wp_normalize_path(trailingslashit($base_dir) . 'scios');
-        } else {
-            $target_dir = wp_normalize_path(trailingslashit(dirname(__DIR__, 2)) . 'logs');
-        }
-
-        if (!$filesystem->is_dir($target_dir)) {
-            $filesystem->mkdir($target_dir, FS_CHMOD_DIR);
-        }
-
-        $filename = sprintf('%s-%s.log', $prefix, gmdate('Ymd-His'));
-        $path     = trailingslashit($target_dir) . $filename;
-        $content  = implode("\n", $lines) . "\n";
-
-        if (!$filesystem->put_contents($path, $content, FS_CHMOD_FILE)) {
-            throw new RuntimeException(__('No se pudo escribir el archivo de log.', 'scios-git-bridge'));
-        }
-
-        return $path;
-    }
-
-    /**
-     * Writes the log using a fallback direct file operation.
-     *
-     * @param array<int, string> $lines  Log lines.
-     * @param string             $prefix Log prefix.
-     *
-     * @return void
-     */
-    private function write_log_fallback(array $lines, string $prefix): void
-    {
-        $log_dir = wp_normalize_path(trailingslashit(dirname(__DIR__, 2)) . 'logs');
-
-        if (!is_dir($log_dir)) {
-            wp_mkdir_p($log_dir);
-        }
-
-        $filename = sprintf('%s-%s.log', $prefix, gmdate('Ymd-His'));
-        $path     = trailingslashit($log_dir) . $filename;
-
-        @file_put_contents($path, implode("\n", $lines) . "\n");
-    }
-
-    /**
-     * Updates the metadata file with the given payload.
-     *
-     * @param WP_Filesystem_Base   $filesystem Filesystem instance.
-     * @param array<string, mixed> $payload    Metadata payload.
-     *
-     * @return void
-     */
     private function update_metadata(WP_Filesystem_Base $filesystem, array $payload): void
     {
         $file = trailingslashit(ABSPATH) . '.scios-deploy.json';
@@ -550,29 +443,5 @@ class SCIOS_Snapshot_Service
         if (!$filesystem->put_contents($file, $encoded, FS_CHMOD_FILE)) {
             throw new RuntimeException(__('No se pudo escribir el archivo de metadata del snapshot.', 'scios-git-bridge'));
         }
-    }
-
-    /**
-     * Converts an absolute path to a relative one, when posible.
-     *
-     * @param string $path Absolute path.
-     *
-     * @return string
-     */
-    private function relative_path(string $path): string
-    {
-        $normalized = str_replace('\\', '/', $path);
-        $root       = str_replace('\\', '/', trailingslashit(ABSPATH));
-
-        if (strpos($normalized, $root) === 0) {
-            return ltrim(substr($normalized, strlen($root)), '/');
-        }
-
-        $plugin_root = str_replace('\\', '/', trailingslashit(dirname(__DIR__, 2)));
-        if (strpos($normalized, $plugin_root) === 0) {
-            return ltrim(substr($normalized, strlen($plugin_root)), '/');
-        }
-
-        return $normalized;
     }
 }
