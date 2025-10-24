@@ -50,6 +50,9 @@ function scios_git_bridge_bootstrap()
     add_action('scios_git_bridge_refresh_status', [$pull_service, 'dry_run']);
     add_action('scios_git_bridge_trigger_deploy', [$pull_service, 'deploy']);
 
+    $snapshot_service = new \Scios\GitBridge\Services\SCIOS_Snapshot_Service();
+    add_action('scios_git_bridge_trigger_snapshot', [$snapshot_service, 'trigger_snapshot'], 10, 1);
+
     load_plugin_textdomain(
         'scios-git-bridge',
         false,
