@@ -46,6 +46,10 @@ function scios_git_bridge_bootstrap()
 
     scios_git_bridge_register_autoloader();
 
+    $pull_service = new \Scios\GitBridge\Services\SCIOS_Pull_Service();
+    add_action('scios_git_bridge_refresh_status', [$pull_service, 'dry_run']);
+    add_action('scios_git_bridge_trigger_deploy', [$pull_service, 'deploy']);
+
     load_plugin_textdomain(
         'scios-git-bridge',
         false,
