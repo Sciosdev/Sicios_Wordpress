@@ -87,6 +87,34 @@ jobs:
                           --exclude-glob *.log \
                           --exclude-glob debug.log \
                           --exclude-glob temp-write-test* \
+                           \
+                          --exclude-glob plugins/3d-viewer/** \
+                          --exclude-glob plugins/all-in-one-seo-pack/** \
+                          --exclude-glob plugins/all-in-one-wp-migration/** \
+                          --exclude-glob plugins/all-in-one-wp-migration-unlimited-extension/** \
+                          --exclude-glob plugins/click-to-chat-for-whatsapp/** \
+                          --exclude-glob plugins/duplicate-page/** \
+                          --exclude-glob plugins/google-analytics-for-wordpress/** \
+                          --exclude-glob plugins/google-analytics-premium/** \
+                          --exclude-glob plugins/google-listings-and-ads/** \
+                          --exclude-glob plugins/jetpack/** \
+                          --exclude-glob plugins/mailpoet/** \
+                          --exclude-glob plugins/one-click-demo-import/** \
+                          --exclude-glob plugins/optinmonster/** \
+                          --exclude-glob plugins/revslider/** \
+                           --exclude-glob plugins/webinar-and-video-conference-with-jitsi-meet/** \
+                          --exclude-glob plugins/wemail/** \
+                          --exclude-glob plugins/woocommerce-conversion-tracking/** \
+                          --exclude-glob plugins/woocommerce-custom-fields/** \
+                          --exclude-glob plugins/woocommerce-gateway-paypal-express-checkout/** \
+                           --exclude-glob plugins/wordpress-seo/** \
+                          --exclude-glob plugins/wordpress-seo-premium/** \
+                          --exclude-glob plugins/wp-crowdfunding/** \
+                          --exclude-glob plugins/wp-file-manager/** \
+                          --exclude-glob plugins/wp-job-manager/** \
+                          --exclude-glob plugins/wp-whatsapp-chat/** \
+                          --exclude-glob plugins/wpseo-woocommerce/** \
+                          \                       
                           $FTP_REMOTE_DIR snapshot/wp-content; bye"
 
       - name: Copy into repo layout
