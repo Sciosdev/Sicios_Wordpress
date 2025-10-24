@@ -1,0 +1,26 @@
+# Solo versionamos wp-content/{plugins,themes,mu-plugins}
+# (NO subas uploads ni caches)
+wp-content/uploads/
+wp-content/cache/
+wp-content/upgrade/
+wp-content/ai1wm-backups/
+wp-content/wflogs/
+wp-content/litespeed/
+wp-content/et-cache/
+wp-content/gt-cache/
+wp-content/backups*/
+wp-content/advanced-cache.php
+wp-content/debug.log
+
+# Basura de sistema / IDEs
+.DS_Store
+Thumbs.db
+*.log
+error_log
+.idea/
+.vscode/
+
+# Paquetes
+*.zip
+*.tar
+*.tar.gz

@@ -1,0 +1,12 @@
+---
+deployment:
+  tasks:
+    - export WEBROOT=/home2/sciosclu/public_html
+
+    - /bin/mkdir -p $WEBROOT/wp-content/plugins
+    - /bin/mkdir -p $WEBROOT/wp-content/themes
+    - /bin/mkdir -p $WEBROOT/wp-content/mu-plugins
+
+    - /bin/cp -a wp-content/plugins/.    $WEBROOT/wp-content/plugins/
+    - /bin/cp -a wp-content/themes/.     $WEBROOT/wp-content/themes/
+    - /bin/cp -a wp-content/mu-plugins/. $WEBROOT/wp-content/mu-plugins/
