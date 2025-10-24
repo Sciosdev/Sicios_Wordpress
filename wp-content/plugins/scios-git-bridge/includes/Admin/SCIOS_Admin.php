@@ -57,9 +57,12 @@ class SCIOS_Admin
             [
                 'sanitize_callback' => [$this, 'sanitize_settings'],
                 'default'           => [
-                    'repository_url'    => '',
-                    'deployment_branch' => '',
-                    'deploy_key'        => '',
+                    'repository_url'      => '',
+                    'deployment_branch'   => '',
+                    'deploy_key'          => '',
+                    'snapshot_repository' => '',
+                    'snapshot_workflow'   => '',
+                    'snapshot_token'      => '',
                 ],
             ]
         );
@@ -89,6 +92,33 @@ class SCIOS_Admin
             'deploy_key',
             esc_html__('Clave de despliegue', 'scios-git-bridge'),
             esc_html__('Clave o token que utilizará el puente para autenticarse.', 'scios-git-bridge')
+        );
+
+        add_settings_section(
+            'scios_git_bridge_snapshot',
+            esc_html__('Snapshots remotos', 'scios-git-bridge'),
+            static function (): void {
+                echo '<p>' . esc_html__('Configura los datos necesarios para solicitar snapshots vía GitHub Actions.', 'scios-git-bridge') . '</p>';
+            },
+            self::PAGE_SLUG
+        );
+
+        $this->add_text_field(
+            'snapshot_repository',
+            esc_html__('Repositorio (owner/repo)', 'scios-git-bridge'),
+            esc_html__('Formato esperado: empresa/proyecto. Si se deja vacío se intentará inferir desde la URL del repositorio.', 'scios-git-bridge')
+        );
+
+        $this->add_text_field(
+            'snapshot_workflow',
+            esc_html__('Workflow de snapshot', 'scios-git-bridge'),
+            esc_html__('Nombre del archivo YAML o ID del workflow que debe ejecutarse.', 'scios-git-bridge')
+        );
+
+        $this->add_password_field(
+            'snapshot_token',
+            esc_html__('Token de snapshot', 'scios-git-bridge'),
+            esc_html__('Token personal con permisos para ejecutar el workflow.', 'scios-git-bridge')
         );
     }
 
@@ -153,6 +183,16 @@ class SCIOS_Admin
                 do_action('scios_git_bridge_trigger_deploy');
                 $this->add_notice('updated', esc_html__('Proceso de despliegue iniciado.', 'scios-git-bridge'));
                 break;
+            case 'trigger-snapshot':
+                /**
+                 * Fires when the user triggers the snapshot action.
+                 */
+                do_action(
+                    'scios_git_bridge_trigger_snapshot',
+                    esc_html__('Acción manual desde el panel de administración', 'scios-git-bridge')
+                );
+                $this->add_notice('updated', esc_html__('Solicitud de snapshot enviada.', 'scios-git-bridge'));
+                break;
             default:
                 $this->add_notice('error', esc_html__('Acción no reconocida.', 'scios-git-bridge'));
                 break;
@@ -173,16 +213,22 @@ class SCIOS_Admin
     {
         if (!is_array($settings)) {
             return [
-                'repository_url'    => '',
-                'deployment_branch' => '',
-                'deploy_key'        => '',
+                'repository_url'      => '',
+                'deployment_branch'   => '',
+                'deploy_key'          => '',
+                'snapshot_repository' => '',
+                'snapshot_workflow'   => '',
+                'snapshot_token'      => '',
             ];
         }
 
         return [
-            'repository_url'    => isset($settings['repository_url']) ? esc_url_raw((string) $settings['repository_url']) : '',
-            'deployment_branch' => isset($settings['deployment_branch']) ? sanitize_text_field((string) $settings['deployment_branch']) : '',
-            'deploy_key'        => isset($settings['deploy_key']) ? sanitize_text_field((string) $settings['deploy_key']) : '',
+            'repository_url'      => isset($settings['repository_url']) ? esc_url_raw((string) $settings['repository_url']) : '',
+            'deployment_branch'   => isset($settings['deployment_branch']) ? sanitize_text_field((string) $settings['deployment_branch']) : '',
+            'deploy_key'          => isset($settings['deploy_key']) ? sanitize_text_field((string) $settings['deploy_key']) : '',
+            'snapshot_repository' => isset($settings['snapshot_repository']) ? sanitize_text_field((string) $settings['snapshot_repository']) : '',
+            'snapshot_workflow'   => isset($settings['snapshot_workflow']) ? sanitize_text_field((string) $settings['snapshot_workflow']) : '',
+            'snapshot_token'      => isset($settings['snapshot_token']) ? sanitize_text_field((string) $settings['snapshot_token']) : '',
         ];
     }
 
@@ -194,9 +240,12 @@ class SCIOS_Admin
     private function get_settings(): array
     {
         $defaults = [
-            'repository_url'    => '',
-            'deployment_branch' => '',
-            'deploy_key'        => '',
+            'repository_url'      => '',
+            'deployment_branch'   => '',
+            'deploy_key'          => '',
+            'snapshot_repository' => '',
+            'snapshot_workflow'   => '',
+            'snapshot_token'      => '',
         ];
 
         $settings = get_option(self::OPTION_NAME, $defaults);
@@ -338,6 +387,7 @@ class SCIOS_Admin
         <div class="scios-git-bridge-actions">
             <?php $this->render_action_form('refresh-status', esc_html__('Actualizar estado', 'scios-git-bridge'), 'secondary'); ?>
             <?php $this->render_action_form('trigger-deploy', esc_html__('Iniciar despliegue', 'scios-git-bridge'), 'primary'); ?>
+            <?php $this->render_action_form('trigger-snapshot', esc_html__('Solicitar snapshot', 'scios-git-bridge'), 'secondary'); ?>
         </div>
         <?php
     }
