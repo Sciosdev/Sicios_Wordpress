@@ -153,6 +153,7 @@ return array(
     'WeDevs\\WeMail\\Rest\\Rest' => $baseDir . '/includes/Rest/Rest.php',
     'WeDevs\\WeMail\\Rest\\Site' => $baseDir . '/includes/Rest/Site.php',
     'WeDevs\\WeMail\\Rest\\States' => $baseDir . '/includes/Rest/States.php',
+    'WeDevs\\WeMail\\Rest\\Tracking' => $baseDir . '/includes/Rest/Tracking.php',
     'WeDevs\\WeMail\\Rest\\Users' => $baseDir . '/includes/Rest/Users.php',
     'WeDevs\\WeMail\\Rest\\Video' => $baseDir . '/includes/Rest/Video.php',
     'WeDevs\\WeMail\\Rest\\WP' => $baseDir . '/includes/Rest/WP.php',

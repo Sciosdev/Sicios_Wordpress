@@ -1,21 +1,21 @@
 # Copyright (c) 2025 Moowoodle Inc. All Rights Reserved.
 msgid ""
 msgstr ""
-"Project-Id-Version: MooWoodle 3.3.4\n"
+"Project-Id-Version: MooWoodle 3.3.6\n"
 "Report-Msgid-Bugs-To: https://dualcube.com/contact/\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-08-22T08:19:18+00:00\n"
+"POT-Creation-Date: 2025-09-24T13:24:59+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: moowoodle\n"
 
 #. Plugin Name of the plugin
 #: moowoodle.php
-#: classes/FrontendScripts.php:314
+#: classes/FrontendScripts.php:315
 msgid "MooWoodle"
 msgstr ""
 
@@ -36,11 +36,12 @@ msgid "DualCube"
 msgstr ""
 
 #: classes/Admin.php:57
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:4
 msgid "Courses"
 msgstr ""
 
 #: classes/Admin.php:61
+#: release/assets/js/components.js:3
 msgid "Cohorts"
 msgstr ""
 
@@ -49,12 +50,12 @@ msgid "Enrolments"
 msgstr ""
 
 #: classes/Admin.php:69
-#: classes/MooWoodle.php:248
-msgid "Settings"
+msgid "Synchronization"
 msgstr ""
 
 #: classes/Admin.php:73
-msgid "Synchronization"
+#: classes/MooWoodle.php:248
+msgid "Settings"
 msgstr ""
 
 #: classes/Admin.php:101
@@ -73,7 +74,7 @@ msgid "Link Type"
 msgstr ""
 
 #: classes/Core/Course.php:215
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:4
 msgid "Course"
 msgstr ""
 
@@ -86,7 +87,7 @@ msgid "Select Item"
 msgstr ""
 
 #: classes/Core/Course.php:229
-#: classes/FrontendScripts.php:333
+#: classes/FrontendScripts.php:343
 msgid "Select an item..."
 msgstr ""
 
@@ -159,27 +160,27 @@ msgstr ""
 msgid "My Courses"
 msgstr ""
 
-#: classes/Enrollment.php:503
+#: classes/Enrollment.php:438
 msgid "Please check your mail or go to My Courses page to access your courses."
 msgstr ""
 
-#: classes/Enrollment.php:505
+#: classes/Enrollment.php:440
 msgid "Order status is :- "
 msgstr ""
 
 #. translators: %s: Start date in Y-m-d format.
-#: classes/Enrollment.php:528
+#: classes/Enrollment.php:463
 #, php-format
 msgid "Start Date: %s"
 msgstr ""
 
 #. translators: %s: End date in Y-m-d format.
-#: classes/Enrollment.php:537
+#: classes/Enrollment.php:472
 #, php-format
 msgid "End Date: %s"
 msgstr ""
 
-#: classes/Enrollment.php:551
+#: classes/Enrollment.php:497
 msgid "You can only purchase one unit of this product."
 msgstr ""
 
@@ -187,27 +188,27 @@ msgstr ""
 msgid "Response is not JSON decodeable"
 msgstr ""
 
-#: classes/FrontendScripts.php:320
+#: classes/FrontendScripts.php:330
 msgid "Manager"
 msgstr ""
 
-#: classes/FrontendScripts.php:321
+#: classes/FrontendScripts.php:331
 msgid "Course creator"
 msgstr ""
 
-#: classes/FrontendScripts.php:322
+#: classes/FrontendScripts.php:332
 msgid "Teacher"
 msgstr ""
 
-#: classes/FrontendScripts.php:323
+#: classes/FrontendScripts.php:333
 msgid "Non-editing teacher"
 msgstr ""
 
-#: classes/FrontendScripts.php:324
+#: classes/FrontendScripts.php:334
 msgid "Student"
 msgstr ""
 
-#: classes/FrontendScripts.php:325
+#: classes/FrontendScripts.php:335
 msgid "Authenticated user"
 msgstr ""
 
@@ -230,7 +231,7 @@ msgid "Visit community forums"
 msgstr ""
 
 #: classes/MooWoodle.php:225
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:1
 msgid "Support"
 msgstr ""
 
@@ -385,7 +386,7 @@ msgid "Password (First Time Login only)"
 msgstr ""
 
 #: release/assets/js/block/my-courses/index.js:1
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:4
 msgid "Action"
 msgstr ""
 
@@ -436,496 +437,309 @@ msgid "Next"
 msgstr ""
 
 #: release/assets/js/components.js:1
-msgid "General"
+msgid "More about MooWoodle."
 msgstr ""
 
 #: release/assets/js/components.js:1
-msgid "Effortlessly configure and verify your WordPress-Moodle connection."
+msgid "Your students will love this!"
 msgstr ""
 
 #: release/assets/js/components.js:1
-msgid "Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site."
+msgid "Better courses, bigger profits"
 msgstr ""
 
 #: release/assets/js/components.js:1
-msgid "Moodle site URL"
+msgid "Yes, Upgrade Me!"
 msgstr ""
 
 #: release/assets/js/components.js:1
-msgid "Moodle access token"
+msgid "Bulk Course Sync"
 msgstr ""
 
-#. translators: %s: URL to Moodle token page
-#: release/assets/js/components.js:2
-#, js-format
-msgid "Enter Moodle access token. You can generate the access token from <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">here</a>. <br>Navigation: Dashboard => Site administration => Server => Manage tokens."
+#: release/assets/js/components.js:1
+msgid "Sync multiple Moodle™ courses to WordPress with one click."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "MooWoodle test connection"
+#: release/assets/js/components.js:1
+msgid "Cohort Enrollment"
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "Connecting to Moodle"
+#: release/assets/js/components.js:1
+msgid "Sell and enroll entire Moodle™ cohorts via WooCommerce."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "Courses Fetch"
+#: release/assets/js/components.js:1
+msgid "Group Enrollment"
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "Category Fetch"
+#: release/assets/js/components.js:1
+msgid "Map course variations to Moodle™ groups for targeted enrollment."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Creation"
+#: release/assets/js/components.js:1
+msgid "Classroom Enrollment"
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Fetch"
+#: release/assets/js/components.js:1
+msgid "Buy multiple seats and assign them to students or teams."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Update"
+#: release/assets/js/components.js:1
+msgid "Gift a Course"
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Enroll"
+#: release/assets/js/components.js:1
+msgid "Let customers purchase and gift courses to others."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Unenroll"
+#: release/assets/js/components.js:1
+msgid "Single Sign-On (SSO)"
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "User Remove"
+#: release/assets/js/components.js:1
+msgid "Access Moodle™ and WordPress with one login."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Get in touch with Support"
+#: release/assets/js/components.js:1
+msgid "Smart Course Sync"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Reach out to the support team for assistance or guidance."
+#: release/assets/js/components.js:1
+msgid "Keep course details updated between Moodle™ and WordPress."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Explore Documentation"
+#: release/assets/js/components.js:1
+msgid "Subscription Courses"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Understand the plugin and its settings."
+#: release/assets/js/components.js:1
+msgid "Offer courses with recurring subscription plans."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Contribute Here"
+#: release/assets/js/components.js:1
+msgid "Unified Access"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Participate in product enhancement."
+#: release/assets/js/components.js:1
+msgid "Give learners one dashboard for all their courses."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Automated user and course synchronization with scheduler"
+#: release/assets/js/components.js:1
+msgid "Bulk Access & Gifting"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle."
+#: release/assets/js/components.js:1
+msgid "Distribute courses through gifting and group enrollments."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Convenient Single Sign-On login"
+#: release/assets/js/components.js:1
+msgid "Allow buyers (e.g., teachers or managers) to purchase multiple seats and assign them to users."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "SSO enables students to access their purchased courses without the need to log in separately to the Moodle site."
+#: release/assets/js/components.js:1
+msgid "Classroom mode / group purchase"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Steady Income through Course Subscriptions"
+#: release/assets/js/components.js:1
+msgid "Enable buyers to remove users and reassign seats when needed - great for managing rotating teams or classrooms."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Generate consistent revenue by offering courses with subscription-based model."
+#: release/assets/js/components.js:1
+msgid "Seat reassignment"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Synchronize Courses in Bulk"
+#: release/assets/js/components.js:1
+msgid "Let buyers gift a course by entering someone else's details during checkout."
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs."
+#: release/assets/js/components.js:1
+msgid "Gift someone"
 msgstr ""
 
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Automatic User Synchronization for Moodle™ and WordPress"
-msgstr ""
-
-#: release/assets/js/components.js:2
-#: release/assets/js/components.js:4
-msgid "Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention."
-msgstr ""
-
-#: release/assets/js/components.js:2
+#: release/assets/js/components.js:1
 msgid "Shop Central"
 msgstr ""
 
-#: release/assets/js/components.js:2
+#: release/assets/js/components.js:1
 msgid "Efficient course information handling for customers."
 msgstr ""
 
-#: release/assets/js/components.js:2
+#: release/assets/js/components.js:1
 msgid "When enabled, the course duration, such as the start and end dates, will be visible on the shop page."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "Display course duration in Shop Page"
+#: release/assets/js/components.js:1
+msgid "Display course duration in 'Shop Page'"
 msgstr ""
 
-#: release/assets/js/components.js:2
+#: release/assets/js/components.js:1
 msgid "'<b>My Course</b>' menu will appear beneath the selected menu on the WooCommerce 'My Account' page of customer dashboard."
 msgstr ""
 
-#: release/assets/js/components.js:2
-msgid "Endpoint menu position - My Course"
+#: release/assets/js/components.js:1
+msgid "Endpoint menu position - 'My Course'"
 msgstr ""
 
 #. translators: %s: URL to WooCommerce email settings
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:2
 #, js-format
 msgid "If enabled, default WordPress new user registration emails will be disabled for both admin and user. <br>You can personalize the content of the MooWoodle New User email from <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">here.</a>"
 msgstr ""
 
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:2
 msgid "Disable new user registration email"
 msgstr ""
 
-#: release/assets/js/components.js:3
-msgid "Bulk Access & Gifting"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Distribute courses through gifting and group enrollments"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Allow buyers (e.g., teachers or managers) to purchase multiple seats and assign them to users."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Classroom Mode / Group Purchase"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Enable buyers to remove users and reassign seats when needed - great for managing rotating teams or classrooms."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Seat Reassignment"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Let buyers gift a course by entering someone else's details during checkout."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Gift Someone"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Tools"
-msgstr ""
-
-#: release/assets/js/components.js:3
-#: release/assets/js/components.js:4
-msgid "Review all system logs and errors"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Advance Log"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "<span class=\"highlighted-part\">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "When WordPress sends a request to the Moodle server for data, communication delays might exceed the default server connection timeout. You can customize the timeout parameters by adjusting them here. <br>Default: 5 seconds."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Connection timeout"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Seconds"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Select the interval for the user synchronization process. Based on this schedule, the cron job will run to sync users between WordPress and Moodle."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Minutes"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Automatic synchronization frequency"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "More surprises? Oh yes."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Bulk Course Sync."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Classroom Enrollment."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Gift a Course."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Single Sign-On."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Smart Course Sync."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Subscription Courses."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Unified Access."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Failed to load courses"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Failed to load categories"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Failed to load total rows"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Failed to perform action"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Failed to perform bulk action"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Short name"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Category"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course duration"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Edit product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Enrolled users"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "View users"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Sync Course Data & Update Product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Create Product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Bulk actions"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Sync course"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Create product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Update product"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Apply"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Search…"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Select"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Courses and Products synchronization"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Fetch Moodle courses & generate products on demand."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course information mapping"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course categories"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Scan the entire Moodle course category structure and synchronize it with the WordPress category listings."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course ID number - Product SKU"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Retrieves the course ID number and assigns it as the product SKU."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course image"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Copies course images and sets them as WooCommerce product images."
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course group"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Course & product synchronization"
-msgstr ""
-
-#: release/assets/js/components.js:3
-#: release/assets/js/components.js:4
-msgid "Create new products along with"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "This will additionally create new products based on Moodle courses fetched, if they do not already exist in WordPress."
-msgstr ""
-
-#: release/assets/js/components.js:3
-#: release/assets/js/components.js:4
-msgid "Update existing products along with"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "Update product information based on Moodle course data. <br><span class=\"highlighted-part\">Caution: This will overwrite all existing product details with those from Moodle course details.</span>"
-msgstr ""
-
-#: release/assets/js/components.js:3
-msgid "More about MooWoodle."
-msgstr ""
-
-#: release/assets/js/components.js:3
+#: release/assets/js/components.js:2
 msgid "Single Sign On"
 msgstr ""
 
-#: release/assets/js/components.js:3
-msgid "Manage seamless login and logout synchronization"
+#: release/assets/js/components.js:2
+msgid "Manage seamless login and logout synchronization."
 msgstr ""
 
-#: release/assets/js/components.js:3
-msgid "Enabling this option allows users to access Moodle courses directly, bypassing the need for login"
+#: release/assets/js/components.js:2
+msgid "Enabling this option allows users to access Moodle courses directly, bypassing the need for login."
 msgstr ""
 
 #. translators: %s: URL to Moodle SSO settings page
-#: release/assets/js/components.js:4
+#: release/assets/js/components.js:3
 #, js-format
 msgid "Generate a unique SSO secret key (must be at least 8 characters) and copy it. Then, go to your Moodle site and paste the copied SSO key <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">there</a>."
 msgstr ""
 
+#: release/assets/js/components.js:3
+msgid "SSO secret key"
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Cohort information is presented with associated products and student enrollments to support administrative actions."
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Log"
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Review all system logs and errors."
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "General"
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Effortlessly configure and verify your WordPress-Moodle connection."
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Provide the URL of your Moodle site where the course will be hosted. Students will receive access to the course content on that site."
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Moodle site URL"
+msgstr ""
+
+#: release/assets/js/components.js:3
+msgid "Moodle access token"
+msgstr ""
+
+#. translators: %s: URL to Moodle token page
 #: release/assets/js/components.js:4
-msgid "SSO Secret Key"
+#, js-format
+msgid "Enter Moodle access token. You can generate the access token from <a href=\"%s\" target=\"_blank\" rel=\"noreferrer\">here</a>. <br>Navigation: Dashboard → Site administration → Server → Manage tokens."
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "How do I resolve a timeout error when WordPress connects with Moodle?"
+msgid "MooWoodle test connection"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "When encountering a timeout error during WordPress-Moodle communication, adjust timeout settings in your server configuration to accommodate longer communication durations."
+msgid "Connecting to Moodle"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "How can I troubleshoot connection errors during Test connection?"
+msgid "Courses Fetch"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Navigate to the \"Log\" menu, where you can use the \"Log\" feature to troubleshoot connectivity issues between your store and Moodle. This tool helps identify necessary changes for resolution."
+msgid "Category Fetch"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Why aren't my customers receiving enrollment emails?"
+msgid "User Creation"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Install a plugin like Email Log to check if New Enrollment emails are logged. If logged, your email functionality is working fine; if not, contact your email server administrator for assistance."
+msgid "User Fetch"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Can I set course expiration dates using MooWoodle?"
+msgid "User Update"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Course-related functionalities, including setting expiration dates, are managed within Moodle itself; MooWoodle does not control these aspects."
+msgid "User Enroll"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Cohort synchronization"
+msgid "User Unenroll"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "User Remove"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Tools"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Manage advanced settings for synchronization, error logging, and connection handling."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Advance log"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "<span class=\"highlighted-part\">Activating this option will log more detailed error information. Enable it only when essential, as it may result in a larger log file.</span>"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "When WordPress sends a request to the Moodle server for data, communication delays might exceed the default server connection timeout. You can customize the timeout parameters by adjusting them here. <br>Default: 5 seconds."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "sec"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Connection timeout"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Seconds"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Select the interval for the user synchronization process. Based on this schedule, the cron job will run to sync users between WordPress and Moodle."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "min"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Minutes"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Automatic synchronization frequency"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Cohorts Synchronization"
 msgstr ""
 
 #: release/assets/js/components.js:4
@@ -933,7 +747,15 @@ msgid "Fetch Moodle cohort on demand & generate products on demand."
 msgstr ""
 
 #: release/assets/js/components.js:4
+msgid "Moodle cohort data is mapped to WordPress products, allowing new products to be created or existing ones to be updated with cohort details."
+msgstr ""
+
+#: release/assets/js/components.js:4
 msgid "Cohort & product synchronization"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Create new products along with"
 msgstr ""
 
 #: release/assets/js/components.js:4
@@ -941,11 +763,167 @@ msgid "This will additionally create new products based on Moodle cohort fetched
 msgstr ""
 
 #: release/assets/js/components.js:4
+msgid "Update existing products along with"
+msgstr ""
+
+#: release/assets/js/components.js:4
 msgid "Update product information based on Moodle cohort data. <br><span class=\"highlighted-part\">Caution: This will overwrite all existing product details with those from Moodle cohort details.</span>"
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "User Synchronization"
+msgid "Failed to load courses"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Failed to load categories"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Failed to load total rows"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Failed to perform action"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Failed to perform bulk action"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Short name"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Category"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course duration"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Edit product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Enrolled users"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "View users"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Sync Course Data"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Sync Course Data & Update Product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Create Product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Bulk actions"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Sync course"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Create product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Update product"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Apply"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Search…"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Comprehensive course data is displayed here, including linked products, enrollment numbers, and related details."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Courses Synchronization"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Fetch Moodle courses & generate products on demand."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Moodle course information is synchronized with WordPress products through categories, IDs, images, and groups."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course information mapping"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course categories"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Scan the entire Moodle course category structure and synchronize it with the WordPress category listings."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course ID number - Product SKU"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Retrieves the course ID number and assigns it as the product SKU."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course image"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Copies course images and sets them as WooCommerce product images."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course group"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Moodle course groups are fetched and linked with products."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course information from Moodle is used to generate new products or refresh existing ones in WordPress."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course & product synchronization"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "This will additionally create new products based on Moodle courses fetched, if they do not already exist in WordPress."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Update product information based on Moodle course data. <br><span class=\"highlighted-part\">Caution: This will overwrite all existing product details with those from Moodle course details.</span>"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Users Synchronization"
 msgstr ""
 
 #: release/assets/js/components.js:4
@@ -997,7 +975,121 @@ msgid "This will trigger immediate synchronization of all existing user accounts
 msgstr ""
 
 #: release/assets/js/components.js:4
-msgid "Log"
+msgid "All Enrollments"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Enrollment records are presented, showing students, their courses, enrollment dates, and current status."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Get in touch with Support"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Reach out to the support team for assistance or guidance."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Explore Documentation"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Understand the plugin and its settings."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Contribute Here"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Participate in product enhancement."
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Automated user and course synchronization with scheduler"
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Utilize personalized scheduling options to synchronize users and courses between WordPress and Moodle."
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Convenient Single Sign-On login"
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "SSO enables students to access their purchased courses without the need to log in separately to the Moodle site."
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Steady Income through Course Subscriptions"
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Generate consistent revenue by offering courses with subscription-based model."
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Synchronize Courses in Bulk"
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Effortlessly synchronize multiple courses at once, ideal for managing large course catalogs."
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Automatic User Synchronization for Moodle™ and WordPress"
+msgstr ""
+
+#: release/assets/js/components.js:4
+#: release/assets/js/index.js:1
+msgid "Synchronizes user accounts between Moodle™ and WordPress, ensuring consistent user management across both platforms without manual intervention."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "How do I resolve a timeout error when WordPress connects with Moodle?"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "When encountering a timeout error during WordPress-Moodle communication, adjust timeout settings in your server configuration to accommodate longer communication durations."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "How can I troubleshoot connection errors during Test connection?"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Navigate to the \"Log\" menu, where you can use the \"Log\" feature to troubleshoot connectivity issues between your store and Moodle. This tool helps identify necessary changes for resolution."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Why aren't my customers receiving enrollment emails?"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Install a plugin like Email Log to check if New Enrollment emails are logged. If logged, your email functionality is working fine; if not, contact your email server administrator for assistance."
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Can I set course expiration dates using MooWoodle?"
+msgstr ""
+
+#: release/assets/js/components.js:4
+msgid "Course-related functionalities, including setting expiration dates, are managed within Moodle itself; MooWoodle does not control these aspects."
+msgstr ""
+
+#: release/assets/js/index.js:1
+msgid "adminlib-support"
 msgstr ""
 
 #: release/assets/js/block/my-courses/block.json
