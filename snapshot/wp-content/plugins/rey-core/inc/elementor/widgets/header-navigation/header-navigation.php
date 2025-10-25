@@ -1502,7 +1502,11 @@ class HeaderNavigation extends \ReyCore\Elementor\WidgetsBase {
 	 */
 	protected function render() {
 
-		$this->_settings = $this->get_settings_for_display();
+                $this->_settings = $this->get_settings_for_display();
+
+                if ( ! isset( $this->_settings['hamburger_text'] ) ) {
+                        $this->_settings['hamburger_text'] = '';
+                }
 
 		// Social Icons
 		add_action('rey/mobile_nav/footer', [$this, 'before_nav_footer'], 0);
@@ -1523,9 +1527,9 @@ class HeaderNavigation extends \ReyCore\Elementor\WidgetsBase {
 				reycore_assets()->add_styles( 'reycore-hbg-styles' );
 			}
 
-			if( $this->_settings['hamburger_text'] ){
-				reycore_assets()->add_styles( 'reycore-hbg-text' );
-			}
+                        if( ! empty( $this->_settings['hamburger_text'] ) ){
+                                reycore_assets()->add_styles( 'reycore-hbg-text' );
+                        }
 
 			if( $overlay = $this->_settings['hover_overlay']){
 				$this->add_render_attribute('_wrapper', 'data-hoverlay', $overlay);
